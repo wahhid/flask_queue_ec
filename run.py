@@ -175,7 +175,20 @@ def queue_app(type_id):
         return jsonify(success='true',message='',results=[{}])
     else:
         return jsonify(success='false',message='No Type Found',results=[{}])
-    
+
+@app.route('/api/v1/app/pickup/<pickup_code>')    
+def pickup(self, pickup_code):
+    sock = xmlrpclib.ServerProxy('http://' + server + ':' + port +'/xmlrpc/common')
+    uid = sock.login(dbname , user , pwd)
+    sock = xmlrpclib.ServerProxy('http://' + server + ':' + port + '/xmlrpc/object')
+    values = {}
+    values.update({'pickup_code': pickup_code})
+    values.update({'state': 'request_pickup'})            
+    result = sock.execute(dbname, uid, pwd, 'queue.trans', 'write', [], values)
+    if result:  
+        return jsonify(success='true',message='',results=[{}])
+    else:
+        return jsonify(success='false',message='No Type Found',results=[{}])
     
 if __name__ == "__main__":
     app.run()
