@@ -99,7 +99,6 @@ def get_user(id):
     partner = sock.execute(dbname, uid, pwd, 'res.partner', 'read', ids[0], fields)
     return jsonify({'username': partner['email']})
 
-
 @app.route('/api/v1/token')
 @auth.login_required
 def get_auth_token():
@@ -163,6 +162,20 @@ def queue_pickup_list():
         return jsonify(success='true',message='',results=data)
     else:
         return jsonify(success='false',message='No Type Found',results=[{}])
-     
+    
+@app.route('/api/v1/app/<int:type_id>')     
+def queue_app(type_id):
+    sock = xmlrpclib.ServerProxy('http://' + server + ':' + port +'/xmlrpc/common')
+    uid = sock.login(dbname , user , pwd)
+    sock = xmlrpclib.ServerProxy('http://' + server + ':' + port + '/xmlrpc/object')
+    values = {}
+    values.update({'type_id': type_id})            
+    result = sock.execute(dbname, uid, pwd, 'queue.pickup', 'create', values)
+    if result:  
+        return jsonify(success='true',message='',results=[{}])
+    else:
+        return jsonify(success='false',message='No Type Found',results=[{}])
+    
+    
 if __name__ == "__main__":
     app.run()
