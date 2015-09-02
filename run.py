@@ -176,19 +176,25 @@ def queue_app(type_id):
     else:
         return jsonify(success='false',message='No Type Found',results=[{}])
 
-@app.route('/api/v1/pickup/<pickup_code>')    
-def pickup(self, pickup_code):
+@app.route('/api/v1/pickup/<type_id>')    
+def pickup(self, type_id):
     sock = xmlrpclib.ServerProxy('http://' + server + ':' + port +'/xmlrpc/common')
     uid = sock.login(dbname , user , pwd)
     sock = xmlrpclib.ServerProxy('http://' + server + ':' + port + '/xmlrpc/object')
-    values = {}
-    values.update({'pickup_code': pickup_code})
-    values.update({'state': 'request_pickup'})            
-    result = sock.execute(dbname, uid, pwd, 'queue.trans', 'write', [], values)
-    if result:  
-        return jsonify(success='true',message='',results=[{}])
+    args = [('type_id','=', type_id),(('state','=','new'))]
+    transs =  sock.execute(dbname, uid, pwd, 'queue.trans', 'search', args)
+    if transs:
+        trans = transs[0]
+        values = {}        
+        values.update({'state': 'request_pickup'})
+        result = sock.execute(dbname, uid, pwd, 'queue.trans', 'write', [trans.id], values)
+        if result:
+            return jsonify(success='false',message='No Type Found',results=trans)
+        else:
+            return jsonify(success='false',message='Transaction Error',results=[{}])
     else:
         return jsonify(success='false',message='No Type Found',results=[{}])
     
+        
 if __name__ == "__main__":
     app.run()
