@@ -182,8 +182,10 @@ def pickup(type_id):
     uid = sock.login(dbname , user , pwd)
     sock = xmlrpclib.ServerProxy('http://' + server + ':' + port + '/xmlrpc/object')
     args = [('type_id','=', type_id),('state','=','draft')]
-    transs =  sock.execute(dbname, uid, pwd, 'queue.trans', 'search', args)
-    if transs:
+    trans_ids =  sock.execute(dbname, uid, pwd, 'queue.trans', 'search', args)
+    if trans_ids:
+        fields = []
+        transs = sock.execute(dbname, uid, pwd, 'queue.trans', 'read', trans_ids, fields)
         trans = transs[0]
         values = {}        
         values.update({'state': 'request_pickup'})
