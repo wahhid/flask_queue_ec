@@ -176,7 +176,7 @@ def queue_app(type_id):
     else:
         return jsonify(success='false',message='No Type Found',results=[{}])
 
-@app.route('/api/v1/app/pickup/<pickup_code>')    
+@app.route('/api/v1/pickup/<pickup_code>')    
 def pickup(self, pickup_code):
     sock = xmlrpclib.ServerProxy('http://' + server + ':' + port +'/xmlrpc/common')
     uid = sock.login(dbname , user , pwd)
