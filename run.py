@@ -170,7 +170,7 @@ def queue_app(type_id):
     sock = xmlrpclib.ServerProxy('http://' + server + ':' + port + '/xmlrpc/object')
     values = {}
     values.update({'type_id': type_id})            
-    result = sock.execute(dbname, uid, pwd, 'queue.pickup', 'create', values)
+    result = sock.execute(dbname, uid, pwd, 'queue.trans', 'create', values)
     if result:  
         return jsonify(success='true',message='',results=[{}])
     else:
