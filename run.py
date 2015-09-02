@@ -181,7 +181,7 @@ def pickup(self, type_id):
     sock = xmlrpclib.ServerProxy('http://' + server + ':' + port +'/xmlrpc/common')
     uid = sock.login(dbname , user , pwd)
     sock = xmlrpclib.ServerProxy('http://' + server + ':' + port + '/xmlrpc/object')
-    args = [('type_id','=', type_id),(('state','=','new'))]
+    args = [('type_id','=', type_id),(('state','=','draft'))]
     transs =  sock.execute(dbname, uid, pwd, 'queue.trans', 'search', args)
     if transs:
         trans = transs[0]
