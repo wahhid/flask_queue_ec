@@ -185,8 +185,7 @@ def pickup(type_id):
     trans_ids =  sock.execute(dbname, uid, pwd, 'queue.trans', 'search', args)
     if trans_ids:
         fields = []
-        transs = sock.execute(dbname, uid, pwd, 'queue.trans', 'read', trans_ids, fields)
-        trans = transs[0]
+        trans = sock.execute(dbname, uid, pwd, 'queue.trans', 'read', trans_ids[0], fields)        
         values = {}        
         values.update({'state': 'request_pickup'})
         result = sock.execute(dbname, uid, pwd, 'queue.trans', 'write', [trans.id], values)
